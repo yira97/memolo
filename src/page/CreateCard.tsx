@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { put_vocard, get_vocard } from '../db'
+import { put_vocard, get_vocard } from '../store'
 import { label, get_text } from '../i18n'
 import { Col, Row, Input, Button, message } from 'antd'
 import { VoCard } from '../interfaces';

@@ -144,14 +144,22 @@ export function array_equal<T>(arr1: Array<T>, arr2: Array<T>, option?: {
   return true
 }
 
-interface Heap<T> {
+export interface Heap<T> {
   peak(): T | undefined
   size(): number
   pop(): T | undefined
   push(e: T): void
 }
 
-class SmallHeap<T> implements Heap<T>{
+export function createMaxHeap<T>(less: (l1: T, l2: T) => boolean): Heap<T> {
+  return new MaxHeap([], less)
+}
+
+export function createMinHeap<T>(greater: (l1: T, l2: T) => boolean): Heap<T> {
+  return new MaxHeap([], greater)
+}
+
+export class MaxHeap<T> implements Heap<T>{
   // m_data: 数组长度就是目前堆的长度
   private m_data: T[] = []
   private less_than: (l: T, r: T) => boolean
@@ -159,7 +167,7 @@ class SmallHeap<T> implements Heap<T>{
   constructor(init_data: T[], less_than: (l: T, r: T) => boolean) {
     this.less_than = less_than
 
-    this.m_data.concat(init_data)
+    this.m_data.push(...init_data)
     // 完成堆结构
     this.maintain_struct()
   }
@@ -224,7 +232,7 @@ class SmallHeap<T> implements Heap<T>{
     for (let child_i = 2 * i + 1; child_i < this.m_data.length; child_i = 2 * child_i + 1) {
       dad = this.m_data[i];
       // 如果右孩子存在,并且右孩子比左孩子大, 那就把j换成右孩子
-      if (child_i + 1 < length && this.less_than(this.m_data[child_i], this.m_data[child_i + 1])) {
+      if (child_i + 1 < this.m_data.length && this.less_than(this.m_data[child_i], this.m_data[child_i + 1])) {
         child_i++
       }
       if (this.less_than(dad, this.m_data[child_i])) {

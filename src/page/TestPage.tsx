@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Row, Col, InputNumber, Button } from 'antd'
 import { get_text, label } from '../i18n'
 import { VoCard } from '../interfaces'
-import { get_vocards_by } from '../db'
+import { get_vocards_by } from '../store'
 import { select_some, clean_duplicate, shuffle } from '../helper'
 
 interface TestProcess {

@@ -2,6 +2,7 @@ const level = require('level');
 const db_name = 'my-db2';
 const db = level(db_name, { valueEncoding: 'json' });
 
+
 const KEY_PREFIX = {
   vocabulary_card: 'vocabulary_card',
   statistic: 'statistic'
@@ -97,109 +98,10 @@ async function get_slice(keys, option) {
   });
 }
 
-//
-//
-// vocabulary card
-//
-//
-
-/**
- * 保存单词卡
- * @param {VoCard} card 
- */
-async function put_vocard(card) {
-  await set_data([KEY_PREFIX.vocabulary_card, card.origin], card);
-}
-
-/**
- * 读取单词卡
- * @param {string} origin 
- */
-async function get_vocard(origin) {
-  try {
-    const data = await get_data([KEY_PREFIX.vocabulary_card, origin]);
-    return data;
-  } catch (e) {
-    return undefined;
-  }
-}
-
-/**
- * 批量读取单词卡
- * @param {number} page 
- * @param {number} page_size 
- * @returns {{data: Array<any>, end: boolean}}
- */
-async function get_vocards(page, page_size) {
-  return await get_slice([KEY_PREFIX.vocabulary_card], { page: page, page_size: page_size });
-}
-
-/**
- * 读取特定单词卡
- * @param {number} max_count
- * @param {(vocard:VoCard) => boolean} select_method
- */
-async function get_vocards_by(max_count, select_method) {
-  const batch = 100;
-  let current_page = 1;
-  const select_card = [];
-  while (select_card.length < max_count) {
-    const cards = await get_vocards(current_page, batch);
-    select_card.push(...cards.data.filter(card => select_method(card)));
-    if (cards.end || select_card.length >= max_count) {
-      break;
-    }
-    current_page++;
-  }
-  if (select_card.length > max_count) {
-    return select_card.slice(0, max_count);
-  }
-  return select_card;
-}
-
-/**
- * 按照优先级返回前max_count个元素
- * @param {number} max_count 
- * @param {(Vocard:VoCard)=>number} score_method 
- */
-async function get_vocards_order_by(max_count, score_method) {
-  const select_card = [];
-  const batch = 100;
-  let current_page = 1;
-  let ongoing = true;
-  while (ongoing) {
-    const cards = await get_vocards(current_page, batch);
-    for (const card of cards) {
-      const card_score = score_method(card);
-      if (select_card.length < card_score) {
-        select_card.push({
-          data: card,
-          score: card_score,
-        });
-      } else {
-        // heap_sort
-      }
-    }
-    if (cards.end) {
-      ongoing = false;
-    }
-  }
-  return select_card.map(c => c.data);
-}
-
-/**
- * 
- * @param {string} origin 
- */
-async function del_vocard(origin) {
-  return await remove_data([KEY_PREFIX.vocabulary_card, origin]);
-}
-
 module.exports = {
-  get_vocard: get_vocard,
-  get_vocards: get_vocards,
-  get_vocards_by: get_vocards_by,
-  get_vocards_order_by: get_vocards_order_by,
-  put_vocard: put_vocard,
-  del_vocard: del_vocard,
+  KEY_PREFIX: KEY_PREFIX,
+  set_data: set_data,
+  get_data: get_data,
+  get_slice: get_slice,
+  remove_data: remove_data,
 };

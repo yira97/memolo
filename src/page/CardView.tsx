@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { get_vocards } from '../db'
+import { get_vocards } from '../store'
 import { VoCard } from '../interfaces'
 import { Row, Col, Descriptions } from 'antd'
 import CardList from '../components/CardList'

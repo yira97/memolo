@@ -1,7 +1,7 @@
 import React from 'react'
-import { List, Button, message, Col, Row } from 'antd'
+import { List, Button, message } from 'antd'
 import { VoCard } from '../interfaces'
-import { del_vocard } from '../db'
+import { del_vocard } from '../store'
 import { get_text, label } from '../i18n'
 
 const CardList: React.FC<{

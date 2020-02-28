@@ -1,4 +1,4 @@
-import { push_with_drop, clean_duplicate, kick_some, array_equal, is_int, create_seq_between } from '../src/helper'
+import { push_with_drop, clean_duplicate, kick_some, array_equal, is_int, create_seq_between, MaxHeap, shuffle } from '../src/helper'
 
 // 首先检验array_equal, 检验后就可以用来测试了
 test('test array_equal', () => {
@@ -84,4 +84,20 @@ test('test create_seq_between', () => {
   expect(
     array_equal(create_seq_between(3, 0), [3, 2, 1])
   ).toBeTruthy
+})
+
+test('test heap', () => {
+  const data = create_seq_between(1, 15)
+  shuffle(data)
+  const h = new MaxHeap(data, (l, r) => l < r)
+  expect(h.pop()).toBe(14)
+  expect(h.pop()).toBe(13)
+  expect(h.pop()).toBe(12)
+  expect(h.pop()).toBe(11)
+  expect(h.pop()).toBe(10)
+  expect(h.pop()).toBe(9)
+  expect(h.pop()).toBe(8)
+  h.push(20)
+  expect(h.pop()).toBe(20)
+  expect(h.pop()).toBe(7)
 })
